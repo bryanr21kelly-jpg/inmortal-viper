@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Action-Adventure Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #282c34; color: white; }
+        #game { width: 800px; height: 600px; border: 1px solid #fff; margin: auto; }
+        #log {
+            height: 100px;
+            overflow-y: scroll;
+            border: 1px solid #fff;
+            background-color: #333;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>RPG Action-Adventure Game</h1>
+    <div id="game"></div>
+    <div id="log"></div>
+    
+    <script>
+        // Game Variables
+        let player = {
+            name: 'Hero',
+            health: 100,
+            level: 1,
+            experience: 0,
+            skills: [],
+        };
+        let enemies = [];
+        let dungeons = [];
+
+        // Function to initialize the game
+        function initGame() {
+            document.getElementById('log').innerHTML = 'Game Initialized!';
+            generateDungeon();
+            spawnEnemies();
+        }
+
+        // Dungeon Generation
+        function generateDungeon() {
+            dungeons.push({ id: 1, name: 'Dark Cave', level: 1 });
+            document.getElementById('log').innerHTML += '\nDungeon Generated: Dark Cave';
+        }
+
+        // Spawn Enemies
+        function spawnEnemies() {
+            enemies.push({ name: 'Goblin', health: 30 });
+            document.getElementById('log').innerHTML += '\nEnemy Spawned: Goblin';
+        }
+
+        // Combat System
+        function attackEnemy() {
+            let enemy = enemies[0]; // Attack the first enemy
+            enemy.health -= 10;
+            if (enemy.health <= 0) {
+                document.getElementById('log').innerHTML += '\nYou defeated the ' + enemy.name + '!';
+                enemies.shift(); // Remove defeated enemy
+            } else {
+                document.getElementById('log').innerHTML += '\nAttacked ' + enemy.name + ', health left: ' + enemy.health;
+            }
+        }
+
+        // Level Up
+        function levelUp() {
+            player.level += 1;
+            player.health += 20; // Increase health on level up
+            document.getElementById('log').innerHTML += '\nLevel Up! Now at level ' + player.level + '!';
+        }
+
+        // Skill Tree
+        function addSkill(skill) {
+            player.skills.push(skill);
+            document.getElementById('log').innerHTML += '\nLearned new skill: ' + skill;
+        }
+
+        // Start Game
+        initGame();
+    </script>
+
+</body>
+</html>
