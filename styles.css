@@ -1,49 +1,106 @@
-.container {
-    background-color: #1a1a1a;
-    color: #f0f0f0;
-    font-family: 'Poppins', sans-serif;
-    padding: 20px;
+:root {
+  color-scheme: dark;
+  --bg: #0f1124;
+  --card: #1a1d35;
+  --ink: #f7f8ff;
+  --accent: #7f5cff;
+  --accent-2: #2de2e6;
+  --danger: #ff5f6d;
 }
 
-.button {
-    background-color: #ff4081;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+* {
+  box-sizing: border-box;
 }
 
-.button:hover {
-    background-color: #e91e63;
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at top right, #2a2f66, var(--bg));
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.app {
+  width: min(920px, 92vw);
+  margin: 24px auto;
+  display: grid;
+  gap: 16px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+}
+
+.hero p {
+  margin: 8px 0 0;
+  opacity: 0.9;
 }
 
 .card {
-    background-color: #2a2a2a;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: color-mix(in srgb, var(--card), black 10%);
+  border: 1px solid color-mix(in srgb, var(--accent), transparent 65%);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    } to {
-        opacity: 1;
-    }
+.hud {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
 }
 
-.fade {
-    animation: fadeIn 1s;
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.dark-theme {
-    background-color: #0d0d0d;
+.button {
+  border: 0;
+  color: white;
+  background: linear-gradient(120deg, var(--accent), #5a37ef);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.2s ease;
 }
 
-/* Additional styles can be added here */
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#skillBtn {
+  background: linear-gradient(120deg, var(--accent-2), #1db6b8);
+}
+
+#resetBtn {
+  background: linear-gradient(120deg, #68708f, #4e5673);
+}
+
+.log h2 {
+  margin-top: 0;
+}
+
+#log {
+  margin: 0;
+  padding-left: 18px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+#log li {
+  margin-bottom: 8px;
+}
+
+.hit {
+  color: var(--danger);
+}
