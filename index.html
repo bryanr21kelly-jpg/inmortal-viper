@@ -1,129 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        canvas {
-            background: black;
-            display: block;
-            margin: auto;
-        }
-
-        #scoreboard {
-            color: white;
-            text-align: center;
-            font-size: 2em;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarketScope - Analizador de Trading</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div id="scoreboard">
-        <span id="playerScore">0</span> : <span id="aiScore">0</span>
-    </div>
-    <canvas id="pongCanvas" width="800" height="400"></canvas>
-    <script>
-        const canvas = document.getElementById('pongCanvas');
-        const ctx = canvas.getContext('2d');
+  <main class="app">
+    <header class="app__header card">
+      <div>
+        <h1>📈 MarketScope</h1>
+        <p>App para analizar el mercado de trading con indicadores técnicos y niveles clave.</p>
+      </div>
+      <button id="refreshBtn" class="button">Actualizar análisis</button>
+    </header>
 
-        const paddleWidth = 10, paddleHeight = 100;
-        const ballSize = 10;
+    <section class="controls card">
+      <label>
+        Activo
+        <select id="symbolSelect">
+          <option value="BTCUSDT">BTC/USDT</option>
+          <option value="ETHUSDT">ETH/USDT</option>
+          <option value="EURUSD">EUR/USD</option>
+          <option value="AAPL">AAPL</option>
+        </select>
+      </label>
 
-        let player = {x: 0, y: canvas.height / 2 - paddleHeight / 2, score: 0};
-        let ai = {x: canvas.width - paddleWidth, y: canvas.height / 2 - paddleHeight / 2, score: 0};
-        let ball = {x: canvas.width / 2, y: canvas.height / 2, radius: ballSize, velocityX: 5, velocityY: 5};
+      <label>
+        Marco temporal
+        <select id="timeframeSelect">
+          <option value="1H">1H</option>
+          <option value="4H" selected>4H</option>
+          <option value="1D">1D</option>
+        </select>
+      </label>
 
-        function drawRect(x, y, width, height, color) {
-            ctx.fillStyle = color;
-            ctx.fillRect(x, y, width, height);
-        }
+      <label>
+        Velas
+        <input id="periodInput" type="number" min="40" max="300" value="120" />
+      </label>
+    </section>
 
-        function drawArc(x, y, radius, color) {
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.fill();
-        }
+    <section class="chart card">
+      <canvas id="priceCanvas" width="1100" height="360" aria-label="Gráfico de precio"></canvas>
+      <div class="chart__legend">
+        <span><i class="dot price"></i>Precio</span>
+        <span><i class="dot ema"></i>EMA 21</span>
+        <span><i class="dot sma"></i>SMA 50</span>
+      </div>
+    </section>
 
-        function resetBall() {
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
-            ball.velocityX = 5 * (Math.random() > 0.5 ? 1 : -1);
-            ball.velocityY = 5 * (Math.random() > 0.5 ? 1 : -1);
-        }
+    <section class="grid">
+      <article class="card stats">
+        <h2>Resumen del mercado</h2>
+        <ul id="marketSummary"></ul>
+      </article>
 
-        function update() {
-            ball.x += ball.velocityX;
-            ball.y += ball.velocityY;
+      <article class="card signal">
+        <h2>Señal sugerida</h2>
+        <p id="signalText">Calculando...</p>
+        <div class="pill-group">
+          <span id="trendPill" class="pill">Tendencia</span>
+          <span id="volatilityPill" class="pill">Volatilidad</span>
+        </div>
+      </article>
 
-            // Ball collision with top and bottom
-            if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-                ball.velocityY = -ball.velocityY;
-            }
+      <article class="card levels">
+        <h2>Niveles clave</h2>
+        <ul id="levelsList"></ul>
+      </article>
+    </section>
+  </main>
 
-            // Ball collision with paddles
-            if (ball.x < player.x + paddleWidth &&
-                ball.y > player.y &&
-                ball.y < player.y + paddleHeight) {
-                ball.velocityX = -ball.velocityX;
-            }
-
-            if (ball.x + ball.radius > ai.x &&
-                ball.y > ai.y &&
-                ball.y < ai.y + paddleHeight) {
-                ball.velocityX = -ball.velocityX;
-            }
-
-            // Score Update
-            if (ball.x - ball.radius < 0) {
-                ai.score += 1;
-                resetBall();
-            }
-            else if (ball.x + ball.radius > canvas.width) {
-                player.score += 1;
-                resetBall();
-            }
-        }
-
-        function draw() {
-            drawRect(0, 0, canvas.width, canvas.height, 'black');
-            drawRect(player.x, player.y, paddleWidth, paddleHeight, 'white');
-            drawRect(ai.x, ai.y, paddleWidth, paddleHeight, 'white');
-            drawArc(ball.x, ball.y, ball.radius, 'white');
-            document.getElementById('playerScore').innerText = player.score;
-            document.getElementById('aiScore').innerText = ai.score;
-        }
-
-        function aiMovement() {
-            let middlePaddle = ai.y + paddleHeight / 2;
-            if (middlePaddle < ball.y) {
-                ai.y += 4;
-            } else {
-                ai.y -= 4;
-            }
-        }
-
-        function gameLoop() {
-            update();
-            aiMovement();
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-
-        document.addEventListener('mousemove', (event) => {
-            const rect = canvas.getBoundingClientRect();
-            player.y = event.clientY - rect.top - paddleHeight / 2;
-        });
-
-        resetBall();
-        gameLoop();
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
